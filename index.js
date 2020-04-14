@@ -1,21 +1,21 @@
 Vue.component('login', {
   data: function() {
     return {
-      userId: '',
       login: '',
       password: '',
     }
   },
-
+  props: [
+    'userId',
+  ],
   methods: {
     signIn: function (login, password) {
       axios.post('http://localhost:2000/login', { login, password } ).then((response) => {
-        console.log(response.data);
-        // this.userId = responce.data;
+        userId = response.data;
+        console.log(userId);
       })
     }
   },
-
   template: `
     <div class ="registration-form" >
       <input v-model="login">
@@ -31,15 +31,17 @@ Vue.component('cell', {
     'item',
     'x',
     'y',
+    'userId',
   ],
 
   methods: {
     makeMove: function (x, y) {
+      console.log(userId);
       axios.post('http://localhost:2000/move', {x, y}, {
-        header: {
-          authorization: {key},
+        headers: {
+          'Authorization': userId,
         }
-      });
+      }).then((response, req) => console.log(req));
     },
   },
 
@@ -47,7 +49,7 @@ Vue.component('cell', {
   <div class="cell" v-on:click="makeMove(x, y)">
     <div v-if="item == 1">X</div>
     <div v-if="item == 2">0</div>
-  </div>  
+  </div>
   `
 })
 
@@ -58,6 +60,7 @@ const app = new Vue({
         field: [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
         message: 'Hello Vue!',
         userName: 'Denis',
+        userId: '',
     },
     methods: {
         clickButton: function() {
