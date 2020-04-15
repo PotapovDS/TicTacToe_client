@@ -7,10 +7,11 @@ Vue.component('login', {
   },
   props: [
     'userId',
+    'userName'
   ],
   methods: {
-    signIn: function (login, password) {
-      axios.post('http://localhost:2000/login', { login, password } ).then((response) => {
+    signIn: function (username, password) {
+      axios.post('http://localhost:2000/login', { username, password } ).then((response) => {
         userId = response.data;
         console.log(userId);
       })
@@ -18,11 +19,35 @@ Vue.component('login', {
   },
   template: `
     <div class ="registration-form" >
-      <input v-model="login">
+      <input v-model="userName">
       <input v-model="password" >
-      <button v-on:click="signIn(login, password)">login</button>
+      <button v-on:click="signIn(userName, password)">login</button>
     </div>
   `
+})
+
+Vue.component('newgame', {
+
+  props: [
+    'userName',
+  ],
+  
+  methods: {
+    startNewGame: function(userName) {
+      axios.post('http://localhost:2000/newGame', { userName }, 
+      {
+        headers: {
+          'Authorization': userId,
+        }
+      }).then((response) => console.log(response.data));
+    }
+  },
+
+  template: `
+  <div class ="newGame">
+    <button v-on:click="startNewGame">start new game</button>
+  </div>`
+
 })
 
 Vue.component('cell', {
@@ -41,7 +66,7 @@ Vue.component('cell', {
         headers: {
           'Authorization': userId,
         }
-      }).then((response, req) => console.log(req));
+      }).then((response) => console.log(response.data));
     },
   },
 
@@ -53,19 +78,15 @@ Vue.component('cell', {
   `
 })
 
-
 const app = new Vue({
     el: '#app',
     data: {
         field: [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-        message: 'Hello Vue!',
         userName: 'Denis',
         userId: '',
     },
     methods: {
-        clickButton: function() {
-            this.message = 'Hello, Max';
-        },
+
     },
     // mounted: function() {
     //   setInterval(() => {
