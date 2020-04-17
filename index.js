@@ -1,4 +1,5 @@
 Vue.component('login', {
+
   data: function() {
     return {
       login: '',
@@ -7,11 +8,12 @@ Vue.component('login', {
   },
   props: [
     'userId',
-    'userName'
+    'userName',
   ],
   methods: {
-    signIn: function (username, password) {
-      axios.post('http://localhost:2000/login', { username, password } ).then((response) => {
+    signIn: function (userName, password) {
+      alert(userName, password);
+      axios.post('http://localhost:2000/signIn', { userName, password } ).then((response) => {
         userId = response.data;
         console.log(userId);
       })
@@ -19,14 +21,15 @@ Vue.component('login', {
   },
   template: `
     <div class ="registration-form" >
-      <input v-model="userName">
-      <input v-model="password" >
+      {{userName}}
+      <input v-bind:userName="userName" v-on:input="$emit('input', $event.target.value)">
+      <input v-model="password">
       <button v-on:click="signIn(userName, password)">login</button>
     </div>
   `
 })
 
-Vue.component('newgame', {
+Vue.component('new-game', {
 
   props: [
     'userName',
@@ -86,11 +89,21 @@ const app = new Vue({
         userId: '',
     },
     methods: {
-
+      signIn: function (userName, password) {
+        alert(userName, password);
+        axios.post('http://localhost:2000/signIn', { userName, password }).then((response) => {
+          userId = response.data;
+          console.log(userId);
+        })
+      }
     },
     // mounted: function() {
     //   setInterval(() => {
-    //     axios.get('http://localhost:2000/getField').then((response) => {
+    //     axios.get('http://localhost:2000/getField', {
+    //       headers: {
+    //         'Authorization': userId,
+    //       }
+    //     }).then((response) => {
     //       this.field = response.data;
     //     });
     //   }, 1000);
