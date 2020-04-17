@@ -1,19 +1,19 @@
 Vue.component('login', {
 
+  props: [
+    'userId',
+    'userName',
+  ],
   data: function() {
     return {
       login: '',
       password: '',
     }
   },
-  props: [
-    'userId',
-    'userName',
-  ],
   methods: {
-    signIn: function (userName, password) {
-      alert(userName, password);
-      axios.post('http://localhost:2000/signIn', { userName, password } ).then((response) => {
+    signIn: function (login, password) {
+      console.log(this.userName, login, password);
+      axios.post('http://localhost:2000/signIn', { login, password } ).then((response) => {
         userId = response.data;
         console.log(userId);
       })
@@ -21,10 +21,9 @@ Vue.component('login', {
   },
   template: `
     <div class ="registration-form" >
-      {{userName}}
-      <input v-bind:userName="userName" v-on:input="$emit('input', $event.target.value)">
+      <input v-model="login" v-on:change="$emit('change', $event.target.value)">
       <input v-model="password">
-      <button v-on:click="signIn(userName, password)">login</button>
+      <button v-on:click="signIn(login, password)">login</button>
     </div>
   `
 })
@@ -34,10 +33,10 @@ Vue.component('new-game', {
   props: [
     'userName',
   ],
-  
+
   methods: {
     startNewGame: function(userName) {
-      axios.post('http://localhost:2000/newGame', { userName }, 
+      axios.post('http://localhost:2000/newGame', { userName },
       {
         headers: {
           'Authorization': userId,
@@ -85,8 +84,10 @@ const app = new Vue({
     el: '#app',
     data: {
         field: [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-        userName: 'Denis',
-        userId: '',
+        user: {
+          userName: '%username%',
+          userId: '',
+        }
     },
     methods: {
       signIn: function (userName, password) {
