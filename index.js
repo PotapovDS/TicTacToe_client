@@ -1,39 +1,36 @@
 Vue.component('login', {
-
-  props: [
-    'userId',
-    'userName',
-  ],
-  data: function() {
+  data: function () {
     return {
-      login: '',
-      password: '',
+      user: {
+        login:'',
+        password:'',
+      }
     }
   },
+  props: [
+    'userName',
+    'password',
+  ],
+
   methods: {
-    signIn: function (login, password) {
-      console.log(this.userName, login, password);
-      axios.post('http://localhost:2000/signIn', { login, password } ).then((response) => {
-        userId = response.data;
-        console.log(userId);
-      })
-    }
+
   },
   template: `
     <div class ="registration-form" >
-      <input v-model="login" v-on:change="$emit('change', $event.target.value)">
-      <input v-model="password">
-      <button v-on:click="signIn(login, password)">login</button>
+      <input v-model="user.login">
+      <input v-model="user.password">
+      {{user.login}}
+      {{user.password}}
+      <button v-on:click="$emit('sign-in', user)">login</button>
     </div>
   `
 })
 
 Vue.component('new-game', {
-
   props: [
     'userName',
+    // 'userId,
   ],
-
   methods: {
     startNewGame: function(userName) {
       axios.post('http://localhost:2000/newGame', { userName },
@@ -58,7 +55,6 @@ Vue.component('cell', {
     'item',
     'x',
     'y',
-    'userId',
   ],
 
   methods: {
@@ -84,17 +80,17 @@ const app = new Vue({
     el: '#app',
     data: {
         field: [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-        user: {
-          userName: '%username%',
-          userId: '',
-        }
+        userName: 0,
+        userId: '',
+        password: '',
     },
     methods: {
       signIn: function (userName, password) {
-        alert(userName, password);
+        alert(userName);
+        alert(password);
         axios.post('http://localhost:2000/signIn', { userName, password }).then((response) => {
           userId = response.data;
-          console.log(userId);
+          console.log(userId, userName, password);
         })
       }
     },

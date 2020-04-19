@@ -13,10 +13,9 @@
 </head>
 <body>
     <div id="app">
-        Hello {{ user.userName }}
-        UserId {{user.userId}}
-        <!-- <input v-model="userName"> -->
-        <login v-bind="user"></login>
+        <login v-bind:userName="userName"
+          v-on:sign-in="signIn($event.login, $event.password)"
+        ></login>
         <new-game></new-game>
         <div class="row" v-for="(row, y) in field">
             <cell v-for="(item, x) in row" v-bind:item="item" v-bind:x="x" v-bind:y="y"/>
