@@ -13,12 +13,19 @@
 </head>
 <body>
     <div id="app">
-        <login v-bind:userName="userName"
+        <login v-bind:user-name="userName"
           v-on:sign-in="signIn($event.login, $event.password)"
         ></login>
-        <new-game></new-game>
+        <new-game v-on:start-new-game="startNewGame(userName)"></new-game>
+        {{ gameId }}
         <div class="row" v-for="(row, y) in field">
-            <cell v-for="(item, x) in row" v-bind:item="item" v-bind:x="x" v-bind:y="y"/>
+            <cell
+              v-for="(item, x) in row"
+              v-bind:item="item"
+              v-bind:x="x"
+              v-bind:y="y"
+              v-bind:user-id="userId"
+            />
         </div>
     </div>
     <script src="index.js"></script>

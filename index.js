@@ -19,8 +19,6 @@ Vue.component('login', {
     <div class ="registration-form" >
       <input v-model="user.login">
       <input v-model="user.password">
-      {{user.login}}
-      {{user.password}}
       <button v-on:click="$emit('sign-in', user)">login</button>
     </div>
   `
@@ -28,25 +26,16 @@ Vue.component('login', {
 
 Vue.component('new-game', {
   props: [
-    'userName',
-    // 'userId,
+    'user-name',
+    'gameId',
   ],
   methods: {
-    startNewGame: function(userName) {
-      axios.post('http://localhost:2000/newGame', { userName },
-      {
-        headers: {
-          'Authorization': userId,
-        }
-      }).then((response) => console.log(response.data));
-    }
   },
-
   template: `
-  <div class ="newGame">
-    <button v-on:click="startNewGame">start new game</button>
+  <div class ="new-game">
+    {{ gameId }}
+    <button v-on:click="$emit('start-new-game')">start new game</button>
   </div>`
-
 })
 
 Vue.component('cell', {
@@ -55,21 +44,23 @@ Vue.component('cell', {
     'item',
     'x',
     'y',
+    'userId'
   ],
 
   methods: {
-    makeMove: function (x, y) {
-      console.log(userId);
+    makeMove: function (x, y, userId) {
+      console.log('userId', userId);
       axios.post('http://localhost:2000/move', {x, y}, {
         headers: {
           'Authorization': userId,
+          'gameId': gameId,
         }
       }).then((response) => console.log(response.data));
     },
   },
 
   template: `
-  <div class="cell" v-on:click="makeMove(x, y)">
+  <div class="cell" v-on:click="makeMove(x, y, userId)">
     <div v-if="item == 1">X</div>
     <div v-if="item == 2">0</div>
   </div>
@@ -82,16 +73,25 @@ const app = new Vue({
         field: [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
         userName: 0,
         userId: '',
+        gameId: '',
         password: '',
     },
     methods: {
-      signIn: function (userName, password) {
-        alert(userName);
-        alert(password);
-        axios.post('http://localhost:2000/signIn', { userName, password }).then((response) => {
-          userId = response.data;
-          console.log(userId, userName, password);
+      signIn: function (login, password) {
+        this.userName = login;
+        axios.post('http://localhost:2000/signIn', { login, password }).then((response) => {
+          this.userId = response.data;
+          console.log(this.userId);
         })
+      },
+      startNewGame: function(userName) {
+        console.log('starting new game' + userName);
+        axios.post('http://localhost:2000/newGame', { userName },
+        {
+          headers: {
+            'Authorization': this.userId,
+          }
+        }).then((response) => gameId = response.data);
       }
     },
     // mounted: function() {
