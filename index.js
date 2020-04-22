@@ -24,7 +24,7 @@ Vue.component('login', {
   `
 })
 
-Vue.component('new-game', {
+Vue.component('start-new-game', {
   props: [
     'user-name',
     'gameId',
@@ -32,24 +32,21 @@ Vue.component('new-game', {
   methods: {
   },
   template: `
-  <div class ="new-game">
+  <div class ="start-new-game">
     {{ gameId }}
     <button v-on:click="$emit('start-new-game')">start new game</button>
   </div>`
 })
 
 Vue.component('cell', {
-
   props: [
     'item',
     'x',
     'y',
     'userId'
   ],
-
   methods: {
     makeMove: function (x, y, userId) {
-      console.log('userId', userId);
       axios.post('http://localhost:2000/move', {x, y}, {
         headers: {
           'Authorization': userId,
@@ -58,7 +55,6 @@ Vue.component('cell', {
       }).then((response) => console.log(response.data));
     },
   },
-
   template: `
   <div class="cell" v-on:click="makeMove(x, y, userId)">
     <div v-if="item == 1">X</div>
@@ -81,24 +77,36 @@ const app = new Vue({
         this.userName = login;
         axios.post('http://localhost:2000/signIn', { login, password }).then((response) => {
           this.userId = response.data;
-          console.log(this.userId);
         })
       },
       startNewGame: function(userName) {
-        console.log('starting new game' + userName);
+        console.log('starting new game', userName);
         axios.post('http://localhost:2000/newGame', { userName },
         {
           headers: {
             'Authorization': this.userId,
           }
-        }).then((response) => gameId = response.data);
-      }
+        }).then((response) => {
+          gameId = response.data;
+          setInterval(() => {
+            axios.get('http://localhost:2000/getField', {
+              headers: {
+                'Authorization': this.userId,
+                'gameId': gameId,
+              }
+            }).then((response) => {
+              this.field = response.data;
+            });
+          }, 1000);
+        });
+      },
     },
     // mounted: function() {
     //   setInterval(() => {
     //     axios.get('http://localhost:2000/getField', {
     //       headers: {
     //         'Authorization': userId,
+    //         'gameId': gameId,
     //       }
     //     }).then((response) => {
     //       this.field = response.data;

@@ -16,7 +16,7 @@
         <login v-bind:user-name="userName"
           v-on:sign-in="signIn($event.login, $event.password)"
         ></login>
-        <new-game v-on:start-new-game="startNewGame(userName)"></new-game>
+        <start-new-game v-on:start-new-game="startNewGame(userName)"></start-new-game>
         {{ gameId }}
         <div class="row" v-for="(row, y) in field">
             <cell
