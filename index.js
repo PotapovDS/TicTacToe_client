@@ -11,9 +11,7 @@ Vue.component('login', {
     'userName',
     'password',
   ],
-
   methods: {
-
   },
   template: `
     <div class ="registration-form" >
@@ -77,6 +75,7 @@ const app = new Vue({
         this.userName = login;
         axios.post('http://localhost:2000/signIn', { login, password }).then((response) => {
           this.userId = response.data;
+          console.log(this.userId);
         })
       },
       startNewGame: function(userName) {

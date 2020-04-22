@@ -21,6 +21,7 @@
         <div class="row" v-for="(row, y) in field">
             <cell
               v-for="(item, x) in row"
+              v-bind:key="x"
               v-bind:item="item"
               v-bind:x="x"
               v-bind:y="y"
