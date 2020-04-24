@@ -89,6 +89,7 @@ const app = new Vue({
           }
         }).then((response) => {
           gameId = response.data;
+          // запускаем мониторинг состояния поля для gameId
           setInterval(() => {
             axios.get('http://localhost:2000/getField', {
               headers: {
