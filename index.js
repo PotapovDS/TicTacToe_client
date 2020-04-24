@@ -50,7 +50,9 @@ Vue.component('cell', {
           'Authorization': userId,
           'gameId': gameId,
         }
-      }).then((response) => console.log(response.data));
+      })
+      .then((response) =>
+        console.log(response.data));
     },
   },
   template: `
