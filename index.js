@@ -31,7 +31,6 @@ Vue.component('start-new-game', {
   },
   template: `
   <div class ="start-new-game">
-    {{ gameId }}
     <button v-on:click="$emit('start-new-game')">start new game</button>
   </div>`
 })
@@ -41,10 +40,12 @@ Vue.component('cell', {
     'item',
     'x',
     'y',
-    'userId'
+    'userId',
+    'gameId',
   ],
   methods: {
-    makeMove: function (x, y, userId) {
+    makeMove: function (x, y, userId, gameId) {
+      console.log('userId, gameID in cell component', userId, gameId);
       axios.post('http://localhost:2000/move', {x, y}, {
         headers: {
           'Authorization': userId,
@@ -56,7 +57,7 @@ Vue.component('cell', {
     },
   },
   template: `
-  <div class="cell" v-on:click="makeMove(x, y, userId)">
+  <div class="cell" v-on:click="makeMove(x, y, userId, gameId)">
     <div v-if="item == 1">X</div>
     <div v-if="item == 2">0</div>
   </div>
@@ -88,18 +89,19 @@ const app = new Vue({
             'Authorization': this.userId,
           }
         }).then((response) => {
-          gameId = response.data;
+          this.gameId = response.data;
+          console.log('startNewGame request gameId', this.gameId);
           // запускаем мониторинг состояния поля для gameId
-          setInterval(() => {
-            axios.get('http://localhost:2000/getField', {
-              headers: {
-                'Authorization': this.userId,
-                'gameId': gameId,
-              }
-            }).then((response) => {
-              this.field = response.data;
-            });
-          }, 1000);
+          // setInterval(() => {
+          //   axios.get('http://localhost:2000/getField', {
+          //     headers: {
+          //       'Authorization': this.userId,
+          //       'gameId': gameId,
+          //     }
+          //   }).then((response) => {
+          //     this.field = response.data;
+          //   });
+          // }, 1000);
         });
       },
     },
